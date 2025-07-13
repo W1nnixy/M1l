@@ -23,9 +23,21 @@ def ban_user(message):
     else:
         bot.reply_to(message, "Эта команда должна быть использована в ответ на сообщение пользователя, которого вы хотите забанить.")
 
+@bot.message_handler(func=lambda message: True)
+def handle_nessage (message):
+    if "https://" in message.text:
+        chat_id = message.chat.id
+        user = message.from_user
+        user_id = user.id
+        username = user.username or f"{user.first_name} {user.last_name or ''}".strip()
+        bot.ban_chat_member(chat_id, user_id)
+        bot.reply_to(message, f"Пользователь @{user.username} был забанен.")
+        
+
+
 @bot.message_handler(content_types=['new_chat_members'])
 def make_some(message):
-    bot.send_message(message.chat.id, 'I accepted a new user!')
+    bot.send_message(message.chat.id, 'у нас новый участник!')
     bot.approve_chat_join_request(message.chat.id, message.from_user.id)
 
 bot.infinity_polling(none_stop=True)
